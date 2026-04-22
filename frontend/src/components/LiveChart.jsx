@@ -26,26 +26,22 @@ ChartJS.register(
 
 const MAX_POINTS = 30;
 
+// Monochromatic Chart Palette
 const CHART_COLORS = {
-  voltage: "#38bdf8",
-  score: "#34d399",
-  fpwm: "#818cf8",
-  bpwm: "#f472b6",
+  voltage: "#ffffff",
+  score: "#a1a1aa",
+  fpwm: "#52525b",
+  bpwm: "#27272a",
 };
 
-/**
- * @param {string} metric  - "voltage" | "score" | "fpwm" | "bpwm"
- * @param {number} value   - current value to append
- * @param {string} label   - chart display label
- */
 export default function LiveChart({ metric, value, label }) {
   const [history, setHistory] = useState([]);
-  const color = CHART_COLORS[metric] || "#38bdf8";
+  const color = CHART_COLORS[metric] || "#ffffff";
 
   useEffect(() => {
     if (value == null) return;
     setHistory((prev) => {
-      const next = [...prev, { value, time: new Date().toLocaleTimeString() }];
+      const next = [...prev, { value, time: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) }];
       return next.slice(-MAX_POINTS);
     });
   }, [value]);
@@ -57,12 +53,12 @@ export default function LiveChart({ metric, value, label }) {
         label,
         data: history.map((h) => h.value),
         borderColor: color,
-        backgroundColor: `${color}18`,
+        backgroundColor: `${color}10`,
         fill: true,
-        tension: 0.4,
-        pointRadius: 2,
-        pointHoverRadius: 5,
-        borderWidth: 2,
+        tension: 0.2,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        borderWidth: 1.5,
       },
     ],
   };
@@ -70,52 +66,47 @@ export default function LiveChart({ metric, value, label }) {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    animation: { duration: 300 },
+    animation: { duration: 0 }, // Instant updates for B&W look
     plugins: {
       legend: { display: false },
       tooltip: {
-        callbacks: {
-          title: (ctx) => ctx[0]?.label || "",
-        },
-        backgroundColor: "#0f1629",
-        borderColor: "rgba(99,179,237,0.2)",
+        backgroundColor: "#000000",
+        borderColor: "rgba(255,255,255,0.1)",
         borderWidth: 1,
-        titleColor: "#64748b",
-        bodyColor: color,
+        titleFont: { family: 'Plus Jakarta Sans', size: 10 },
+        bodyFont: { family: 'Plus Jakarta Sans', size: 12, weight: '700' },
+        padding: 10,
+        displayColors: false,
       },
     },
     scales: {
       x: {
         ticks: {
-          maxTicksLimit: 6,
-          color: "#64748b",
-          font: { size: 10 },
-          maxRotation: 0,
+          maxTicksLimit: 4,
+          color: "#71717a",
+          font: { family: 'Plus Jakarta Sans', size: 9 },
         },
-        grid: { color: "rgba(255,255,255,0.04)" },
+        grid: { display: false },
         border: { display: false },
       },
       y: {
-        ticks: { color: "#64748b", font: { size: 10 } },
-        grid: { color: "rgba(255,255,255,0.04)" },
+        ticks: { 
+          color: "#71717a", 
+          font: { family: 'Plus Jakarta Sans', size: 9 },
+          padding: 8,
+        },
+        grid: { color: "rgba(255,255,255,0.03)" },
         border: { display: false },
       },
     },
   };
 
   return (
-    <div className="card">
-      <div className="card-header">
+    <div className="card" style={{ padding: '16px 20px' }}>
+      <div className="flex-between mb-16">
         <span className="card-title">{label}</span>
-        <span
-          style={{
-            fontFamily: "var(--font-head)",
-            fontSize: 18,
-            fontWeight: 700,
-            color,
-          }}
-        >
-          {value ?? "—"}
+        <span style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>
+          {value != null ? value : "—"}
         </span>
       </div>
       <div className="chart-wrap">

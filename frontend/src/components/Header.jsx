@@ -1,25 +1,31 @@
 // src/components/Header.jsx
+import React from "react";
+import { LuZap, LuShieldCheck, LuShieldAlert } from "react-icons/lu";
+
 export default function Header({ connected }) {
   return (
     <header className="app-header">
       <div className="header-brand">
-        <div className="header-brand-logo">☀️</div>
-        <span className="header-brand-name">SolarGuard</span>
+        <div className="header-brand-logo">
+          <LuZap />
+        </div>
+        <div className="header-brand-name">Surya.dev</div>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-        <div className="header-status">
-          <div className={`status-dot${connected ? "" : " disconnected"}`} />
-          <span>{connected ? "Live — Connected" : "Reconnecting…"}</span>
-        </div>
-        <div style={{ fontSize: "12px", color: "var(--clr-muted)" }}>
-          {new Date().toLocaleDateString("en-IN", {
-            weekday: "short",
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })}
-        </div>
+      <div className="header-status">
+        {connected ? (
+          <>
+            <LuShieldCheck />
+            <span>Telemetry Active</span>
+            <div className="status-dot" />
+          </>
+        ) : (
+          <>
+            <LuShieldAlert />
+            <span>Connection Offline</span>
+            <div className="status-dot disconnected" />
+          </>
+        )}
       </div>
     </header>
   );

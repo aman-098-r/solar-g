@@ -1,22 +1,29 @@
 // src/components/StatCard.jsx
+import React from "react";
 
-export default function StatCard({ label, value, unit, icon, accent, description }) {
+export default function StatCard({ 
+  label, 
+  value, 
+  unit, 
+  icon: Icon, 
+  description,
+  accent // kept for backward compat if needed, but we mostly use monochrome now
+}) {
   return (
-    <div
-      className="stat-card"
-      style={{ "--stat-accent": accent || "var(--grad-accent)" }}
-    >
-      <span className="stat-icon">{icon}</span>
+    <div className="stat-card">
       <div className="stat-label">{label}</div>
       <div className="stat-value">
-        {value ?? <span style={{ fontSize: "20px", color: "var(--clr-muted)" }}>—</span>}
+        {value != null ? value : "—"}
+        {unit && <span className="stat-unit" style={{ marginLeft: 6 }}>{unit}</span>}
       </div>
-      {unit && <div className="stat-unit">{unit}</div>}
-      {description && (
-        <div style={{ marginTop: 8, fontSize: 11, color: "var(--clr-muted)" }}>
-          {description}
+      
+      {Icon && (
+        <div className="stat-icon">
+          {typeof Icon === 'string' ? Icon : <Icon />}
         </div>
       )}
+
+      {description && <div className="stat-desc">{description}</div>}
     </div>
   );
 }

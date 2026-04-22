@@ -1,46 +1,39 @@
 // src/components/ScoreRing.jsx
 import { useMemo } from "react";
 
-const SIZE = 160;
-const STROKE = 14;
+const SIZE = 180;
+const STROKE = 10;
 const R = (SIZE - STROKE) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * R;
 
-function getColor(score) {
-  if (score >= 80) return "#34d399";
-  if (score >= 50) return "#fbbf24";
-  return "#f87171";
-}
-
-function getLabel(score) {
-  if (score >= 80) return { text: "Clean", cls: "badge-clean" };
-  if (score >= 50) return { text: "Moderate", cls: "badge-moderate" };
-  return { text: "Dirty", cls: "badge-dirty" };
+function getStyles(score) {
+  if (score >= 80) return { color: "#ffffff", shadow: "rgba(255,255,255,0.4)", text: "Excellent", cls: "badge-clean" };
+  if (score >= 50) return { color: "#facc15", shadow: "rgba(250,204,21,0.3)", text: "Moderate", cls: "badge-moderate" };
+  return { color: "#ef4444", shadow: "rgba(239,68,68,0.3)", text: "Maintenance", cls: "badge-dirty" };
 }
 
 export default function ScoreRing({ score }) {
   const safeScore = score ?? 0;
   const progress = Math.min(100, Math.max(0, safeScore));
-  const color = useMemo(() => getColor(progress), [progress]);
-  const label = useMemo(() => getLabel(progress), [progress]);
+  const { color, shadow, text, cls } = useMemo(() => getStyles(progress), [progress]);
 
   const dashOffset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
 
   return (
     <div className="score-ring-wrap">
-      <div className="card-title" style={{ marginBottom: 0 }}>Cleanliness Score</div>
+      <div className="card-title" style={{ marginBottom: 0 }}>Efficiency Index</div>
       <div className="score-ring">
         <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
-          {/* Track */}
+          {/* Background Track */}
           <circle
             cx={SIZE / 2}
             cy={SIZE / 2}
             r={R}
             fill="none"
-            stroke="rgba(255,255,255,0.05)"
+            stroke="var(--clr-border)"
             strokeWidth={STROKE}
           />
-          {/* Progress */}
+          {/* Progress Ring */}
           <circle
             cx={SIZE / 2}
             cy={SIZE / 2}
@@ -48,23 +41,23 @@ export default function ScoreRing({ score }) {
             fill="none"
             stroke={color}
             strokeWidth={STROKE}
-            strokeLinecap="round"
+            strokeLinecap="square"
             strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={dashOffset}
             style={{
-              transition: "stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1), stroke 0.4s",
-              filter: `drop-shadow(0 0 8px ${color}80)`,
+              transition: "stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s",
+              filter: `drop-shadow(0 0 6px ${shadow})`,
             }}
           />
         </svg>
         <div className="score-ring-text">
-          <span className="score-ring-value" style={{ color }}>
+          <span className="score-ring-value">
             {score != null ? Math.round(safeScore) : "—"}
           </span>
-          <span className="score-ring-sub">/ 100</span>
+          <span className="score-ring-sub">Efficiency</span>
         </div>
       </div>
-      <span className={`score-label-badge ${label.cls}`}>{label.text}</span>
+      <span className={`score-label-badge ${cls}`}>{text}</span>
     </div>
   );
 }

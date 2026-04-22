@@ -1,4 +1,4 @@
-# SolarGuard — Solar Panel Cleaning Dashboard
+# Surya.dev — Solar Panel Cleaning Dashboard
 
 Full-stack monorepo: **React 18** · **Node.js + Express + WebSocket** · **Python FastAPI** · **Firebase RTDB**
 
